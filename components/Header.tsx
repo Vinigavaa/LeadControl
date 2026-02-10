@@ -1,10 +1,21 @@
+import Image from "next/image";
 import Link from "next/link";
+import { auth } from "@/lib/auth";
+import { Button } from "./ui/button";
 
-export default function Header() {
+export default async function Header() {
+  const session = await auth();
+
   return (
     <header className="flex h-20 items-center justify-between px-10 ml-25 pt-5">
-      <Link href="/" className="text-xl font-bold text-[#FFD41D]">
-        LeadControl
+      <Link href="/">
+        <Image
+          src="/leadcontrol.png"
+          alt="LeadControl"
+          width={180}
+          height={40}
+          priority
+        />
       </Link>
 
       <nav className="flex items-center gap-8">
@@ -17,9 +28,16 @@ export default function Header() {
         <Link href="#" className="text-sm text-white/70 transition-colors hover:text-white">
           Contato
         </Link>
-        <Link href="#" className="rounded-md bg-[#FFD41D] px-5 py-2 text-sm font-semibold text-[#000000] transition-colors hover:bg-[#e6bf1a]">
-          Começar agora
-        </Link>
+
+        {session ? (
+          <Button asChild>
+            <Link href="/dashboard">Dashboard</Link>
+          </Button>
+        ) : (
+          <Button asChild>
+            <Link href="/login">Entrar</Link>
+          </Button>
+        )}
       </nav>
     </header>
   );

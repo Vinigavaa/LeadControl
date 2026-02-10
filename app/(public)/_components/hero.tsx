@@ -1,3 +1,5 @@
+import { Button } from "@/components/ui/button";
+
 export default function Hero() {
   return (
     <section className="relative ml-120px overflow-hidden">
@@ -26,24 +28,12 @@ export default function Hero() {
 
             {/* CTAs */}
             <div className="flex flex-wrap items-center gap-4">
-              <a href="#"
-                className="rounded-lg bg-[#FFD41D] px-7 py-3.5 text-sm font-bold text-black shadow-lg shadow-[#FFD41D]/25 transition-all hover:brightness-95 hover:shadow-xl hover:shadow-[#FFD41D]/30">
+              <Button>
                 Começar agora
-              </a>
-              <a
-                href="#"
-                className="group flex items-center gap-2 rounded-lg border border-neutral-200 px-7 py-3.5 text-sm font-medium text-neutral-400 transition-colors hover:border-neutral-300 hover:bg-neutral-50">
+              </Button>
+              <Button>
                 Ver como funciona
-                <svg
-                  className="h-4 w-4 transition-transform group-hover:translate-x-0.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-                </svg>
-              </a>
+              </Button>
             </div>
 
             {/* Social proof */}
