@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
-import { Button } from "./ui/button";
+import LogoutButton from "@/components/logout-button";
 
 export default async function Header() {
   const session = await auth();
@@ -30,13 +30,12 @@ export default async function Header() {
         </Link>
 
         {session ? (
-          <Button asChild>
-            <Link href="/dashboard">Dashboard</Link>
-          </Button>
+          <>
+            <Link href="/dashboard" className="text-sm text-white/70 transition-colors hover:text-white">Dashboard</Link>
+            <LogoutButton />
+          </>
         ) : (
-          <Button asChild>
-            <Link href="/login">Entrar</Link>
-          </Button>
+            <Link href="/login" className="text-sm text-white/70 transition-colors hover:text-white">Entrar</Link>
         )}
       </nav>
     </header>

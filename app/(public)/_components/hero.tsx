@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 
 export default function Hero() {
@@ -55,154 +56,19 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* ── Coluna direita: mockup dashboard ── */}
-          <div className="relative">
-            {/* Glow atrás do mockup */}
-            <div className="pointer-events-none absolute inset-0 -m-10 rounded-3xl bg-[#FFD41D]/10 blur-[60px]" />
-
-            {/* Dashboard principal */}
-            <div className="relative rounded-2xl border border-neutral-200/80 bg-white p-5 shadow-2xl shadow-neutral-200/60">
-              {/* Top bar do dashboard */}
-              <div className="mb-5 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <div className="h-3 w-3 rounded-full bg-[#FFD41D]" />
-                  <span className="text-xs font-semibold text-neutral-700">
-                    Dashboard
-                  </span>
-                </div>
-                <div className="flex gap-1.5">
-                  <div className="h-2.5 w-2.5 rounded-full bg-neutral-200" />
-                  <div className="h-2.5 w-2.5 rounded-full bg-neutral-200" />
-                  <div className="h-2.5 w-2.5 rounded-full bg-neutral-200" />
-                </div>
-              </div>
-
-              {/* Métricas */}
-              <div className="mb-5 grid grid-cols-3 gap-3">
-                <MetricCard label="Leads ativos" value="1.248" change="+12%" />
-                <MetricCard label="Conversão" value="24,8%" change="+3,2%" />
-                <MetricCard label="Receita" value="R$ 84k" change="+18%" />
-              </div>
-
-              {/* Gráfico de barras */}
-              <div className="mb-5 rounded-xl border border-neutral-100 bg-neutral-50/80 p-4">
-                <div className="mb-3 flex items-center justify-between">
-                  <span className="text-[11px] font-medium text-neutral-500">
-                    Leads por semana
-                  </span>
-                  <span className="text-[10px] text-neutral-400">Últimos 30 dias</span>
-                </div>
-                <div className="flex items-end gap-1.5 h-20">
-                  {[40, 65, 45, 80, 55, 90, 70, 95, 60, 85, 75, 100].map(
-                    (h, i) => (
-                      <div
-                        key={i}
-                        className="flex-1 rounded-sm transition-all"
-                        style={{
-                          height: `${h}%`,
-                          backgroundColor:
-                            h >= 90 ? "#FFD41D" : "#e5e5e5",
-                        }}
-                      />
-                    )
-                  )}
-                </div>
-              </div>
-
-              {/* Funil de vendas */}
-              <div className="rounded-xl border border-neutral-100 bg-neutral-50/80 p-4">
-                <span className="mb-3 block text-[11px] font-medium text-neutral-500">
-                  Funil de vendas
-                </span>
-                <div className="flex flex-col gap-2">
-                  <FunnelStep label="Novos leads" value={320} max={320} />
-                  <FunnelStep label="Qualificados" value={210} max={320} />
-                  <FunnelStep label="Proposta enviada" value={98} max={320} />
-                  <FunnelStep label="Fechados" value={42} max={320} />
-                </div>
-              </div>
-            </div>
-
-            {/* Card flutuante — canto superior direito */}
-            <div className="absolute -top-4 -right-4 rounded-xl border border-neutral-200 bg-white px-4 py-3 shadow-lg sm:-right-6">
-              <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#FFD41D]/15">
-                  <svg className="h-4 w-4 text-[#FFD41D]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                  </svg>
-                </div>
-                <div>
-                  <div className="text-[10px] text-neutral-400">Crescimento</div>
-                  <div className="text-sm font-bold text-neutral-800">+32%</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Card flutuante — canto inferior esquerdo */}
-            <div className="absolute -bottom-4 -left-4 rounded-xl border border-neutral-200 bg-white px-4 py-3 shadow-lg sm:-left-6">
-              <div className="flex items-center gap-2">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-green-100">
-                  <svg className="h-4 w-4 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <div className="text-[10px] text-neutral-400">Leads hoje</div>
-                  <div className="text-sm font-bold text-neutral-800">+47</div>
-                </div>
-              </div>
-            </div>
+          {/* ── Coluna direita: GIF do produto ── */}
+          <div>
+            <Image
+              src="/HeroGif.gif"
+              alt="LeadControl em ação"
+              width={600}
+              height={400}
+              className="w-full h-auto"
+              unoptimized
+            />
           </div>
         </div>
       </div>
     </section>
-  );
-}
-
-/* ── Componentes auxiliares ── */
-
-function MetricCard({
-  label,
-  value,
-  change,
-}: {
-  label: string;
-  value: string;
-  change: string;
-}) {
-  return (
-    <div className="rounded-xl border border-neutral-100 bg-neutral-50/80 p-3">
-      <div className="text-[10px] text-neutral-400">{label}</div>
-      <div className="mt-1 text-lg font-bold text-neutral-800">{value}</div>
-      <div className="mt-0.5 text-[10px] font-medium text-green-600">
-        {change}
-      </div>
-    </div>
-  );
-}
-
-function FunnelStep({
-  label,
-  value,
-  max,
-}: {
-  label: string;
-  value: number;
-  max: number;
-}) {
-  const pct = (value / max) * 100;
-  return (
-    <div className="flex items-center gap-3">
-      <span className="w-28 text-[11px] text-neutral-500 shrink-0">{label}</span>
-      <div className="h-2 flex-1 overflow-hidden rounded-full bg-neutral-200">
-        <div
-          className="h-full rounded-full bg-[#FFD41D]"
-          style={{ width: `${pct}%` }}
-        />
-      </div>
-      <span className="w-8 text-right text-[11px] font-semibold text-neutral-600 shrink-0">
-        {value}
-      </span>
-    </div>
   );
 }
