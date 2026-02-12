@@ -64,4 +64,13 @@ model VerificationToken {
   @@map("verification_tokens")
 }
 
+model leads {
+  id String @id @default(cuid())
+  nome String
+  telefone Int @unique
+  email String 
+  userId String  @map("user_id")
+  
+}
+
 
