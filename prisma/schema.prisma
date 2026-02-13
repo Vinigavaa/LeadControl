@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client"
   output   = "../app/generated/prisma"
@@ -13,36 +7,70 @@ datasource db {
   provider = "postgresql"
 }
 
+// ─── Enums ───────────────────────────────────────────────
+
+enum LeadStatus {
+  NOVO
+  CONTATO
+  QUALIFICADO
+  PROPOSTA
+  NEGOCIACAO
+  GANHO
+  PERDIDO
+}
+
+enum MessageDirection {
+  INBOUND
+  OUTBOUND
+}
+
+enum MessageStatus {
+  PENDING
+  SENT
+  DELIVERED
+  READ
+  FAILED
+}
+
+enum ScheduledMessageStatus {
+  PENDING
+  SENT
+  FAILED
+  CANCELLED
+}
+
+// ─── Auth (NextAuth) ─────────────────────────────────────
+
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String  @map("user_id")
-  type               String
-  provider           String
-  providerAccountId  String  @map("provider_account_id")
-  refresh_token      String? @db.Text
-  access_token       String? @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String? @db.Text
-  session_state      String?
- 
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@unique([provider, providerAccountId])
   @@map("accounts")
 }
- 
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique @map("session_token")
   userId       String   @map("user_id")
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
- 
+
   @@map("sessions")
 }
- 
+
 model User {
   id            String    @id @default(cuid())
   name          String?
@@ -51,26 +79,111 @@ model User {
   image         String?
   accounts      Account[]
   sessions      Session[]
- 
+  leads             Lead[]
+  tags              Tag[]
+  whatsappInstances WhatsAppInstance[]
+
   @@map("users")
 }
- 
+
 model VerificationToken {
   identifier String
   token      String
   expires    DateTime
- 
+
   @@unique([identifier, token])
   @@map("verification_tokens")
 }
 
-model leads {
-  id String @id @default(cuid())
-  nome String
-  telefone Int @unique
-  email String 
-  userId String  @map("user_id")
-  
+// ─── Leads ───────────────────────────────────────────────
+
+model Lead {
+  id            String     @id @default(cuid())
+  name          String
+  phone         String
+  email         String?
+  status        LeadStatus @default(NOVO)
+  expectedValue Decimal?   @map("expected_value") @db.Decimal(10, 2)
+  origem        String?    // whatsapp, manual, website
+  notes         String?    @db.Text
+  tagId         String?    @map("tag_id")
+  userId        String     @map("user_id")
+  createdAt     DateTime   @default(now()) @map("created_at")
+  updatedAt     DateTime   @updatedAt @map("updated_at")
+
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tag      Tag?      @relation(fields: [tagId], references: [id])
+  messages Message[]
+
+  @@index([userId, status])
+  @@index([phone])
+  @@map("leads")
 }
 
+model Tag {
+  id     String @id @default(cuid())
+  name   String
+  color  String @default("#3B82F6")
+  userId String @map("user_id")
 
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  leads Lead[]
+
+  @@unique([name, userId])
+  @@map("tags")
+}
+
+// ─── WhatsApp (Evolution API) ────────────────────────────
+
+model WhatsAppInstance {
+  id           String   @id @default(cuid())
+  instanceName String   @map("instance_name")
+  instanceId   String?  @map("instance_id")
+  status       String   @default("disconnected")
+  phone        String?
+  apiKey       String?  @map("api_key")
+  userId       String   @map("user_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  messages          Message[]
+  scheduledMessages ScheduledMessage[]
+
+  @@map("whatsapp_instances")
+}
+
+model Message {
+  id         String           @id @default(cuid())
+  content    String           @db.Text
+  direction  MessageDirection
+  phone      String
+  status     MessageStatus    @default(PENDING)
+  leadId     String?          @map("lead_id")
+  instanceId String           @map("instance_id")
+  externalId String?          @map("external_id")
+  createdAt  DateTime         @default(now()) @map("created_at")
+
+  lead     Lead?            @relation(fields: [leadId], references: [id])
+  instance WhatsAppInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  @@index([leadId])
+  @@index([phone])
+  @@map("messages")
+}
+
+model ScheduledMessage {
+  id          String                 @id @default(cuid())
+  content     String                 @db.Text
+  phone       String
+  scheduledAt DateTime               @map("scheduled_at")
+  sentAt      DateTime?              @map("sent_at")
+  status      ScheduledMessageStatus @default(PENDING)
+  instanceId  String                 @map("instance_id")
+  createdAt   DateTime               @default(now()) @map("created_at")
+
+  instance WhatsAppInstance @relation(fields: [instanceId], references: [id], onDelete: Cascade)
+
+  @@index([status, scheduledAt])
+  @@map("scheduled_messages")
+}
