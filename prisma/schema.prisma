@@ -104,6 +104,7 @@ model Lead {
   email         String?
   status        LeadStatus @default(NOVO)
   expectedValue Decimal?   @map("expected_value") @db.Decimal(10, 2)
+  valorFechado  Decimal?   @map("valor_fechado") @db.Decimal(10, 2)
   origem        String?    // whatsapp, manual, website
   notes         String?    @db.Text
   tagId         String?    @map("tag_id")

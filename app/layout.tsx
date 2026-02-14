@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Fustat } from "next/font/google";
 import "./globals.css";
+import { SessionAuthProvider } from "@/components/session-auth";
+
 
 const fustat = Fustat({
   variable: "--font-fustat",
@@ -19,11 +21,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <body
-        className={`${fustat.variable} antialiased`}
+        className={`${fustat.variable} antialiased bg-black`}
       >
+      <SessionAuthProvider>
         {children}
+      </SessionAuthProvider>
       </body>
     </html>
   );

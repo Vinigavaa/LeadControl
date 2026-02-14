@@ -1,7 +1,13 @@
 {
   "permissions": {
     "allow": [
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(npm install:*)",
+      "Bash(npx shadcn@latest add chart:*)",
+      "Bash(npx prisma migrate:*)",
+      "Bash(find:*)",
+      "Bash(ls:*)",
+      "Bash(npx shadcn@latest add:*)"
     ]
   }
 }

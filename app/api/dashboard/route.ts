@@ -38,6 +38,8 @@ function countByStatus(leads: { status: string }[]) {
     return {
         total: leads.length,
         novo: leads.filter(l => l.status === "NOVO").length,
+        contato: leads.filter(l => l.status === "CONTATO").length,
+        qualificado: leads.filter(l => l.status === "QUALIFICADO").length,
         proposta: leads.filter(l => l.status === "PROPOSTA").length,
         negociacao: leads.filter(l => l.status === "NEGOCIACAO").length,
         ganho: leads.filter(l => l.status === "GANHO").length,
